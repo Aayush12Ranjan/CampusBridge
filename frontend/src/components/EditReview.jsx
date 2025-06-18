@@ -14,7 +14,7 @@ const EditReview = () => {
     const fetchReview = async () => {
       try {
         const headers = { Authorization: `Bearer ${authToken}` };
-        const { data } = await axios.put(`http://localhost:5000/api/review/update/${reviewId}`, { headers });
+        const { data } = await axios.put(`http://localhost:8082/api/review/update/${reviewId}`, { headers });
         setReview(data);
       } catch (err) {
         setError("Failed to load review");

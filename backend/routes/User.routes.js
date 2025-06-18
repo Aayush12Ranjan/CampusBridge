@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { getAllUsers, getUserById, login, signup } from "../Controller/User.controller.js";
+import { getAllUsers, getUserById, login, signup,Delete } from "../Controller/User.controller.js";
 import {authenticateUser} from "../config/authMiddleware.js";
 
 const Userrouter = express.Router();
@@ -20,6 +20,10 @@ Userrouter.post("/login", login);
 Userrouter.get("/users", getAllUsers);
 
 Userrouter.get("/profile", authenticateUser, getUserById);
+
+//delete profile
+
+Userrouter.delete('/delete/:id',Delete);
 
 
 export default Userrouter;

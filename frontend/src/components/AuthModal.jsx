@@ -29,8 +29,8 @@ const AuthModal = ({ onClose, onSuccess }) => {
     }
 
     const endpoint = isSignUp
-      ? "http://localhost:5000/api/auth/signup"
-      : "http://localhost:5000/api/auth/login";
+      ? "http://localhost:8082/api/auth/signup"
+      : "http://localhost:8082/api/auth/login";
 
     try {
       let response, data;

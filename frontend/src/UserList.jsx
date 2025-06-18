@@ -353,7 +353,7 @@ export default function UserList() {
   const companyName = location.state?.companyName;
   const statusFilter = location.state?.status;
 
-  const usersApiUrl = 'http://localhost:5000/api/auth/users';
+  const usersApiUrl = 'http://localhost:8082/api/auth/users';
 
   useEffect(() => {
     const fetchUsers = async () => {

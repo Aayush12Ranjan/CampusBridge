@@ -1,12 +1,33 @@
+// import mongoose from "mongoose";
+
+// const connectDB = async () => {
+//   try {
+//     await mongoose.connect(, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     });
+//     console.log("✅ MongoDB Connected Successfully (Local)");
+//   } catch (error) {
+//     console.error("❌ MongoDB Connection Error:", error);
+//     process.exit(1);
+//   }
+// };
+
+// export default connectDB;
+
+
+
+
+
 import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/company_reviews", {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("✅ MongoDB Connected Successfully (Local)");
+    console.log("✅ MongoDB Connected Successfully");
   } catch (error) {
     console.error("❌ MongoDB Connection Error:", error);
     process.exit(1);

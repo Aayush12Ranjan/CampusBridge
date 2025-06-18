@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: campus-bridge
+    runtime: node
+    buildCommand: |
+      echo "📦 Installing dependencies..."
+      cd frontend && npm ci && npm run build
+      cd ../backend && npm ci
+    startCommand: node backend/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: VITE_API_BASE_URL
+        value: https://campus-bridge.onrender.com
+      - key: FRONTEND_URL
+        value: https://campus-bridge.onrender.com
+      - key: MONGODB_URI
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+    healthCheckPath: /api/health
+    autoDeploy: true

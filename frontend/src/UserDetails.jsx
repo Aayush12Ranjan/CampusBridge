@@ -121,7 +121,7 @@ export default function UserDetails() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const reviewsApiUrl = "http://localhost:5000/api/review/all";
+  const reviewsApiUrl = "http://localhost:8082/api/review/all";
 
   useEffect(() => {
     const fetchData = async () => {

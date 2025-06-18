@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import cloudinary from '../config/cloudinary.js';
 import User from '../model/User.model.js';
 
+
 const signup = async (req, res) => {
   try {
     console.log("Received Body:", req.body);
@@ -12,9 +13,9 @@ const signup = async (req, res) => {
 
     const { username, email, password, confirmPassword, batch,companyName,status } = req.body;
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
+    // if (password !== confirmPassword) {
+    //   return res.status(400).json({ message: "Passwords do not match" });
+    // }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -154,6 +155,26 @@ export default login;
   }
 };
 
-export { signup, login,getAllUsers,getUserById };
+
+const Delete = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const user = await User.findByIdAndDelete(id); // Removed req.body
+    if (!user) {
+      console.log("User not found.");
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("User deleted successfully.");
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (err) {
+    console.error("Internal server error", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export { signup, login,getAllUsers,getUserById,Delete };
 
 

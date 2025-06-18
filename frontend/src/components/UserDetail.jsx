@@ -177,7 +177,7 @@ export default function UserDetail() {
   const [editReview, setEditReview] = useState(null);
   const [updatedExperience, setUpdatedExperience] = useState("");
 
-  const reviewsApiUrl = "http://localhost:5000/api/review/all";
+  const reviewsApiUrl = "http://localhost:8082/api/review/all";
   const loggedInUserId = localStorage.getItem("userId");
 
   useEffect(() => {
