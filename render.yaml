@@ -4,36 +4,72 @@ services:
     runtime: node
     nodeVersion: 18.x
     buildCommand: |
-      echo "===== ATOMIC DEPENDENCY INSTALL ====="
-      echo "Node $(node -v) | NPM $(npm -v)"
+      # ===== INITIALIZATION =====
+      export PROJECT_ROOT="/opt/render/project/src"
+      echo "⚙️  PROJECT_ROOT set to: $PROJECT_ROOT"
       
-      # Nuclear option - fresh install
-      cd backend
+      # ===== BACKEND NUCLEAR INSTALL =====
+      echo "🔧 BACKEND SETUP"
+      cd $PROJECT_ROOT/backend
+      echo "📂 Directory contents:"
+      ls -la
+      
+      echo "🧹 Cleaning previous installs..."
       rm -rf node_modules package-lock.json .npmrc
+      
+      echo "📝 Configuring npm..."
       echo "legacy-peer-deps=true" > .npmrc
       echo "strict-peer-deps=false" >> .npmrc
+      echo "save-exact=true" >> .npmrc
       
-      npm install --production=false --no-audit --force
-      echo "✅ Dependency Tree:"
-      npm ls express --depth=1
+      echo "📦 Installing backend dependencies..."
+      npm install --production=false --no-audit --force --no-fund
+      echo "✅ Backend dependencies verified:"
+      npm list express --depth=0
       
-      # Verify critical paths
-      echo "🔍 Module Verification:"
-      ls -la node_modules/express
-      node -e "console.log('Express:', require.resolve('express'))"
-      
-      cd ../frontend
-      npm install
+      # ===== FRONTEND BUILD =====
+      echo "🖥️  FRONTEND BUILD"
+      cd $PROJECT_ROOT/frontend
+      npm install --no-audit --no-fund
       npm run build
+      
+      # ===== FINAL VERIFICATION =====
+      echo "🔍 FINAL CHECKS"
+      cd $PROJECT_ROOT/backend
+      echo "📌 Critical paths:"
+      node -e "
+        console.log('1. NODE_PATH:', process.env.NODE_PATH);
+        console.log('2. Express location:', require.resolve('express'));
+        console.log('3. Module search paths:', module.paths);
+        console.log('4. Process working directory:', process.cwd());
+      "
     startCommand: |
-      cd backend
-      export NODE_PATH=./node_modules
-      node -e "console.log('Final Express Path:', require.resolve('express'))"
+      # ===== STARTUP SEQUENCE =====
+      export PROJECT_ROOT="/opt/render/project/src"
+      cd $PROJECT_ROOT/backend
+      export NODE_PATH="$PROJECT_ROOT/backend/node_modules"
+      
+      echo "🚀 STARTUP CHECKS:"
+      echo "1. Current directory: $(pwd)"
+      echo "2. NODE_PATH: $NODE_PATH"
+      node -e "
+        try {
+          console.log('3. Express resolved at:', require.resolve('express'));
+          console.log('4. Module paths:', module.paths);
+        } catch (e) {
+          console.error('❌ CRITICAL ERROR:', e);
+          process.exit(1);
+        }
+      "
+      
+      echo "⏳ Starting server..."
       node server.js
     envVars:
       - key: NODE_PATH
-        value: ./backend/node_modules
+        value: "/opt/render/project/src/backend/node_modules"
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+    healthCheckPath: /api/health
+    autoDeploy: true
