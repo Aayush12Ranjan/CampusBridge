@@ -2,33 +2,38 @@ services:
   - type: web
     name: campus-bridge
     runtime: node
-    nodeVersion: 18.x  # Explicitly requires Node 18
+    nodeVersion: 18.x
     buildCommand: |
-      echo "==== BUILD STARTED ===="
-      echo "Node: $(node -v)"
-      echo "NPM: $(npm -v)"
+      echo "===== ATOMIC DEPENDENCY INSTALL ====="
+      echo "Node $(node -v) | NPM $(npm -v)"
       
-      echo "🛠️ Building frontend..."
-      cd frontend && npm ci --no-audit && npm run build
+      # Nuclear option - fresh install
+      cd backend
+      rm -rf node_modules package-lock.json .npmrc
+      echo "legacy-peer-deps=true" > .npmrc
+      echo "strict-peer-deps=false" >> .npmrc
       
-      echo "🔧 Installing backend (production only)..."
-      cd ../backend && npm ci --no-audit --omit=dev
-      echo "✔️ Backend dependencies installed"
-      ls node_modules/express  # Verify critical package
+      npm install --production=false --no-audit --force
+      echo "✅ Dependency Tree:"
+      npm ls express --depth=1
+      
+      # Verify critical paths
+      echo "🔍 Module Verification:"
+      ls -la node_modules/express
+      node -e "console.log('Express:', require.resolve('express'))"
+      
+      cd ../frontend
+      npm install
+      npm run build
     startCommand: |
-      echo "==== STARTING SERVER ===="
-      node -e "console.log('Express path:', require.resolve('express'))"
-      node backend/server.js
+      cd backend
+      export NODE_PATH=./node_modules
+      node -e "console.log('Final Express Path:', require.resolve('express'))"
+      node server.js
     envVars:
+      - key: NODE_PATH
+        value: ./backend/node_modules
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000  # Must match server.js
-      - key: VITE_API_BASE_URL
-        value: https://campus-bridge.onrender.com
-      - key: MONGODB_URI
-        value: mongodb+srv://Aayush:aayush123@campusbridge-cluster.4itih3l.mongodb.net/campusbridge?retryWrites=true&w=majority
-      - key: JWT_SECRET
-        generateValue: true
-    healthCheckPath: /api/health
-    autoDeploy: true
+        value: 10000
