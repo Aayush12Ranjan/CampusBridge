@@ -5,44 +5,30 @@
   "main": "server.js",
   "type": "module",
   "engines": {
-    "node": "18.x",  // Explicit version matching Render
+    "node": "18.x",
     "npm": ">=9.0.0"
   },
   "scripts": {
-    // ===== PRODUCTION COMMANDS =====
-    "start": "NODE_OPTIONS='--experimental-import-meta-resolve' NODE_PATH=./node_modules node server.js",
+    "start": "NODE_OPTIONS=\"--experimental-import-meta-resolve\" NODE_PATH=./node_modules node server.js",
     "prod": "npm run verify && npm run start",
-    
-    // ===== DEPLOYMENT LIFECYCLE =====
     "install:render": "rm -rf node_modules package-lock.json && npm install --omit=dev --legacy-peer-deps --no-audit --no-fund --force",
     "preinstall": "echo '⚠️ Ensure you are using Node 18! Current:'; node -v",
     "postinstall": "npm run verify",
     "verify": "node -e \"const p = require.resolve('express'); console.log(`✅ Verified express@${require(p).version} at ${p}`)\" || (echo '❌ Express verification failed!' && exit 1)",
-    
-    // ===== DEBUGGING =====
-    "debug:paths": "node -e \"console.log('Module Paths:', module.paths, '\nNODE_PATH:', process.env.NODE_PATH)\"",
+    "debug:paths": "node -e \"console.log('Module Paths:', module.paths, '\\nNODE_PATH:', process.env.NODE_PATH)\"",
     "debug:express": "node -e \"console.log(require('express/package.json').version); console.log('Resolved at:', require.resolve('express'))\"",
-    
-    // ===== DEVELOPMENT =====
     "dev": "nodemon --exec \"node --experimental-import-meta-resolve\" server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    // ===== CORE DEPENDENCIES (PINNED) =====
     "express": "4.18.2",
     "mongoose": "8.12.1",
     "socket.io": "4.8.1",
-    
-    // ===== AUTH =====
     "bcryptjs": "3.0.2",
     "jsonwebtoken": "9.0.2",
-    
-    // ===== UTILITIES =====
     "dotenv": "16.4.1",
     "cors": "2.8.5",
     "streamifier": "0.1.1",
-    
-    // ===== FILE UPLOAD =====
     "multer": "1.4.5-lts.1",
     "cloudinary": "1.41.3",
     "multer-storage-cloudinary": "4.0.0"
