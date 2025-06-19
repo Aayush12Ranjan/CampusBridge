@@ -11,8 +11,8 @@ services:
       # ===== FRONTEND FIRST =====
       echo "🖥️  FRONTEND SETUP"
       cd $PROJECT_ROOT/frontend
-      echo "📦 Installing frontend dependencies..."
-      npm install --no-audit --no-fund
+      echo "📦 Installing frontend dependencies (including dev)..."
+      npm install --no-audit --no-fund --include=dev || (echo '❌ Failed to install frontend deps' && exit 1)
 
       echo "🚧 Building frontend..."
       npx vite build || (echo '❌ Vite build failed' && exit 1)
@@ -20,46 +20,17 @@ services:
       # ===== BACKEND SETUP =====
       echo "🔧 BACKEND SETUP"
       cd $PROJECT_ROOT/backend
-      echo "📂 Directory contents:"
-      ls -la
-
-      echo "🧹 Cleaning previous installs..."
       rm -rf node_modules package-lock.json .npmrc
-
-      echo "📝 Configuring npm..."
       echo "legacy-peer-deps=true" > .npmrc
       echo "strict-peer-deps=false" >> .npmrc
       echo "save-exact=true" >> .npmrc
 
       echo "📦 Installing backend dependencies..."
-      npm install --production=false --no-audit --no-fund --force
-      echo "✅ Backend dependencies verified:"
-      npm list express --depth=0
-
-      # ===== FINAL CHECK =====
-      echo "🔍 Final verification"
-      node -e "
-        console.log('✅ Express location:', require.resolve('express'));
-        console.log('✅ Working directory:', process.cwd());
-      "
+      npm install --production=false --no-audit --force --no-fund
     startCommand: |
-      # ===== STARTUP =====
       export PROJECT_ROOT="/opt/render/project/src"
       cd $PROJECT_ROOT/backend
       export NODE_PATH="$PROJECT_ROOT/backend/node_modules"
-
-      echo "🚀 STARTUP CHECKS:"
-      echo "1. Current directory: $(pwd)"
-      echo "2. NODE_PATH: $NODE_PATH"
-      node -e "
-        try {
-          console.log('✅ Express resolved at:', require.resolve('express'));
-          console.log('✅ Module paths:', module.paths);
-        } catch (e) {
-          console.error('❌ CRITICAL ERROR:', e);
-          process.exit(1);
-        }
-      "
 
       echo "⏳ Starting server..."
       node server.js
