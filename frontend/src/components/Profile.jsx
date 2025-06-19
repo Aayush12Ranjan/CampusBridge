@@ -715,7 +715,10 @@ const handleDeleteProfile = async () => {
     }
 
     // Use the exact endpoint format that works in Postman
-    await axios.delete(`http://localhost:8082/api/auth/delete/${userId}`, { headers });
+    // await axios.delete(`http://localhost:8082/api/auth/delete/${userId}`, { headers });
+
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/auth/delete/${userId}`);
+
     
     // Clear local storage and redirect
     localStorage.removeItem("token");

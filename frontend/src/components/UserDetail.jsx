@@ -177,7 +177,10 @@ export default function UserDetail() {
   const [editReview, setEditReview] = useState(null);
   const [updatedExperience, setUpdatedExperience] = useState("");
 
-  const reviewsApiUrl = "http://localhost:8082/api/review/all";
+  // const reviewsApiUrl = "http://localhost:8082/api/review/all";
+
+  const reviewsApiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/review/all`;
+
   const loggedInUserId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -221,7 +224,10 @@ export default function UserDetail() {
   // Delete review
   const handleDelete = async (reviewId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/review/${reviewId}`);
+      // await axios.delete(`http://localhost:5000/api/review/${reviewId}`);
+
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/review/${reviewId}`);
+
       setReviews(reviews.filter((review) => review._id !== reviewId));
     } catch (error) {
       console.error("Error deleting review:", error);
@@ -231,7 +237,9 @@ export default function UserDetail() {
   // Update review
   const handleUpdate = async (reviewId) => {
     try {
-      await axios.put(`http://localhost:5000/api/review/${reviewId}`, {
+      // await axios.put(`http://localhost:5000/api/review/${reviewId}`
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/review/${reviewId}`, 
+ {
         experience: updatedExperience,
       });
       setReviews(

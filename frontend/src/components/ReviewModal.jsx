@@ -423,7 +423,10 @@ const ReviewModal = ({ onClose, isSelected }) => {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:8082/api/review/create", formData, {
+      // await axios.post("http://localhost:8082/api/review/create", formData,
+       await axios.post(
+  `${import.meta.env.VITE_API_BASE_URL}/api/review/create`,
+  formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

@@ -6,7 +6,9 @@ const ViewReviewsModal = ({ companyName, onClose }) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8082/api/reviews/${companyName}`)
+      // .get(`http://localhost:8082/api/reviews/${companyName}`)
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/reviews/${companyName}`)
+
       .then((res) => setReviews(res.data))
       .catch((err) => console.error(err));
   }, [companyName]);
